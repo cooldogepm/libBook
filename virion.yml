@@ -1,0 +1,7 @@
+name: libBook
+antigen: cooldogedev\libBook
+api: [ 4.0.0 ]
+author: cooldogedev
+description: Send preview of books to players
+php: [ 8.0 ]
+version: 0.0.1
