@@ -2,12 +2,15 @@
 Send preview of books to players
 
 ## Examples
+
+### Hello world
 ```php
 $item = VanillaItems::WRITTEN_BOOK();
-$item->setTitle("Test Title");
-$item->setAuthor("cooldogedev");
-$item->setPageText(0, "Test Page 1");
-$item->setPageText(1, "Test Page 2");
+$item->setPageText(0, "Hello World!");
+$item->setPageText(1, "This is an example of libBook");
 
-LibBook::sendPreview($sender, $item);
+LibBook::sendPreview(Player, $item);
 ```
+
+### Projects using libBook
+[RulesBook](https://github.com/nhanaz-pm-pl/RulesBook)
