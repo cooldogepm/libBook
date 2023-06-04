@@ -9,9 +9,9 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\item\WritableBookBase;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
+use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 use pocketmine\network\mcpe\protocol\types\inventory\UseItemTransactionData;
 use pocketmine\player\Player;
@@ -35,11 +35,9 @@ final class LibBook
     {
         $item->setCustomName(""); // sometimes it shows up as a popup
 
-        $oldHandSlot = $player->getInventory()->getHeldItemIndex();
-        $oldItem = clone $player->getInventory()->getItem($oldHandSlot);
+        $oldItem = $player->getInventory()->getItemInHand();
 
-        $player->getInventory()->setItem($oldHandSlot, $item);
-        $player->getInventory()->setHeldItemIndex($oldHandSlot);
+        $player->getInventory()->setItemInHand($item);
 
         $player->getNetworkSession()->sendDataPacket(InventoryTransactionPacket::create(
             0,
@@ -48,17 +46,16 @@ final class LibBook
                 [],
                 UseItemTransactionData::ACTION_CLICK_AIR,
                 new BlockPosition(0, 0, 0),
-                255,
-                $oldHandSlot,
-                ItemStackWrapper::legacy(TypeConverter::getInstance()->coreItemStackToNet($item)),
-                $player->getPosition(),
-                new Vector3(0, 0, 0),
+                0,
+                0,
+                ItemStackWrapper::legacy(ItemStack::null()),
+                Vector3::zero(),
+                Vector3::zero(),
                 0
             )
         ));
 
-        $player->getInventory()->setItem($oldHandSlot, $oldItem);
-        $player->getInventory()->setHeldItemIndex($oldHandSlot);
+        $player->getInventory()->setItemInHand($oldItem);
     }
 
     public static function sendPreview(Player $player, WritableBookBase $book): void
