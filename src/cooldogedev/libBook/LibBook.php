@@ -9,7 +9,6 @@ use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\item\WritableBookBase;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
@@ -37,15 +36,16 @@ final class LibBook
         $item->setCustomName(""); // sometimes it shows up as a popup
 
         $oldItem = $player->getInventory()->getItemInHand();
+        $networkSession = $player->getNetworkSession();
 
         $player->getInventory()->setItemInHand($item);
-        $player->getNetworkSession()->getInvManager()->syncSlot(
+        $networkSession->getInvManager()->syncSlot(
             $player->getInventory(),
             $player->getInventory()->getHeldItemIndex(),
-            TypeConverter::getInstance()->coreItemStackToNet($item)
+            $networkSession->getTypeConverter()->coreItemStackToNet($item)
         );
 
-        $player->getNetworkSession()->sendDataPacket(InventoryTransactionPacket::create(
+        $networkSession->sendDataPacket(InventoryTransactionPacket::create(
             0,
             [],
             UseItemTransactionData::new(
